@@ -1,0 +1,59 @@
+﻿@model Carwash.Models.ServiceModel
+<style>
+    .form-floating > label {
+        right: 0px !important;
+    }
+</style>
+
+<div class="row" dir="rtl">
+    <div class="col-md-4 form-floating">
+        <input class="form-control text-end" asp-for="CustomerName" placeholder="نام مشتری" />
+        <label for="CustomerName">نام مشتری</label>
+    </div>
+    <div class="col-md-4 form-floating">
+        <input class="form-control text-end" asp-for="NumberPhone" placeholder="شماره موبایل" />
+        <label for="NumberPhone">شماره موبایل</label>
+    </div>
+    <div class="col-md-4 k-rtl">
+        <label for="CarId">خودرو</label>
+        @(
+            Html.Kendo().ComboBoxFor(x => x.CarId)
+            .DataTextField("Text")
+            .DataValueField("Value")
+            .Placeholder("خودرو انتخاب نشده است")
+            .Filter(FilterType.Contains)
+            .DataSource(source =>
+            {
+                source.Read(r => r.Action("Car_Read", "Service"));
+            })
+            )
+
+        @* <select class="form-control" asp-for="CarId" asp-items="(List<SelectListItem>)ViewBag.Cars">
+        </select>
+        <label for="CarId">خودرو</label>*@
+    </div>
+</div>
+<button class="btn btn-primary mt-3" onclick="Save()">ثبت</button>
+
+
+@section Scripts{
+    <script>
+        function Save() {
+            let myData = {
+                CustomerName: $("#CustomerName").val(),
+                NumberPhone: $("#NumberPhone").val(),
+                CarId: $("#CarId").val(),
+            }
+            $.ajax({
+                url: "/Service/Create",
+                type: "Post",
+                data: myData,
+                dataType: "Json",
+                complete: function () {
+                    $("#CustomerName").val(null);
+                    $("#NumberPhone").val(null);
+                },
+            })
+        }
+    </script>
+}

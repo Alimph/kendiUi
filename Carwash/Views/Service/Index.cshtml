@@ -1,0 +1,36 @@
+﻿@using Kendo
+
+
+<div class="k-rtl">
+    @(
+        Html.Kendo().Grid<Carwash.Models.ServiceModel>()
+        .Name("SeriviceGrid")
+        .Columns(col =>
+        {
+            col.Bound(c => c.CarName).Title("نام خودرو").Width(100).Filterable(false);
+            col.Bound(c => c.CustomerName).Title("نام مشتری");
+            col.Bound(c => c.NumberPhone).Title("شماره همراه").Width(200).Sortable(false);
+            col.Bound(c => c.IsCompleted).Title("وضعیت").ClientTemplate("# if(IsCompleted){#<span>انجام شده</span> #} else {#<span>انجام نشده</span> #} #");
+            col.Bound("").Title("عملیات").ClientTemplate("# if(IsCompleted) {#<a class='btn btn-primary disabled'>انجام شد</a>#} else {#<a class='btn btn-primary text-white' onclick='complelatedService(#=Id#)'>انجام شد</a>#} #");
+        })
+        .Sortable()
+        .Filterable()
+        .Pageable()
+        .DataSource(x => x.Ajax().Read("Data_Kendo", "Service").PageSize(10))
+        )
+</div>
+
+<script>
+    function complelatedService(id){
+       $.ajax({
+           url:"/service/completed/"+id,
+           success:function(){
+             $("#SeriviceGrid").data("kendoGrid").dataSource.read();
+           }
+       })
+    }
+</script>
+
+
+
+
